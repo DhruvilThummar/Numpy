@@ -545,6 +545,32 @@ jobs:
               margin: 2rem 0;
           }
           
+          .markdown-body div[align="center"] h2 {
+              border-bottom: none;
+              padding-bottom: 0;
+              margin: 2rem 0 1rem;
+          }
+          
+          .markdown-body div[align="center"] h3 {
+              color: #64748b;
+              font-weight: 500;
+              margin: 1rem 0 2rem;
+          }
+          
+          .markdown-body div[align="center"] a {
+              display: inline-block;
+              margin: 0.5rem;
+          }
+          
+          .markdown-body div[align="center"] img[src*="shields.io"] {
+              margin: 0.5rem 0.25rem;
+          }
+          
+          .markdown-body div[align="center"] p {
+              margin: 1.5rem 0 0;
+              font-size: 1.1rem;
+          }
+          
           /* ===== Footer ===== */
           .footer {
               background: linear-gradient(135deg, #1e293b 0%, #334155 100%);

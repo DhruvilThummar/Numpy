@@ -271,14 +271,10 @@ This project is open source and available for educational use. Feel free to use,
 
 ---
 
-<div>
-
 ![Made with ❤️](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F-red?style=for-the-badge)
 ![Open Source](https://img.shields.io/badge/Open%20Source-Yes-green?style=for-the-badge)
 ![Python 3.7+](https://img.shields.io/badge/Python-3.7%2B-blue?style=for-the-badge)
 ![Community Driven](https://img.shields.io/badge/Community-Driven-orange?style=for-the-badge)
-
-</div>
 
 **Happy Learning! 🚀**
 
