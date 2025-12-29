@@ -530,7 +530,7 @@ np.bool_                                        # True/False
 
 ---
 
-**Made with ❤️ for the NumPy community**
+**Made with ❤️ Dhruvil Thummar**
 
 *Happy Array Computing! 🚀*
 
