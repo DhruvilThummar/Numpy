@@ -1,137 +1,218 @@
-# 🎯 NumPy Quick Reference (The Cheat Sheet!)
+<div align="center">
 
-> Forget memorizing! Just copy-paste what you need 👇
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+# 🎯 NumPy Quick Reference
+
+### ⚡ The Ultimate Cheat Sheet ⚡
+**Forget memorizing, just copy-paste what you need!**
+
+[![Back to README](https://img.shields.io/badge/←_Back_to_README-667EEA?style=for-the-badge&logoColor=white)](README.md)
+[![Full Tutorial](https://img.shields.io/badge/📖_Full_Tutorial-764BA2?style=for-the-badge&logoColor=white)](src/code.ipynb)
+[![GitHub](https://img.shields.io/badge/⭐_Star_on_GitHub-181717?style=for-the-badge&logo=github)](https://github.com/DhruvilThummar/Numpy)
+
+</div>
 
 ---
 
 ## 🗂️ Find What You Need
 
-| 🔍 Looking for... | 🎯 Go here |
-|---------|-------------|
-| Making arrays from scratch | [Array Creation](#-array-creation) |
-| Checking size, shape, type | [Array Properties](#-array-properties) |
-| Getting specific elements | [Indexing & Slicing](#-indexing--slicing) |
-| Math stuff (+, -, *, /) | [Math Operations](#-math-operations) |
-| Sum, average, min, max | [Aggregation](#-aggregation) |
-| Reshape, transpose, flip | [Shape Manipulation](#-shape-manipulation) |
-| Putting arrays together | [Combining Arrays](#-combining-arrays) |
-| Working with NaN (missing values) | [NaN Handling](#-nan-handling) |
-| Linear algebra stuff | [Matrix Operations](#-matrix-operations) |
+<div align="center">
+
+| 🔍 **Looking for...** | 🎯 **Jump to Section** | ⚡ **Quick Action** |
+|:---------------------|:----------------------|:-------------------|
+| Making arrays from scratch | [🏗️ Array Creation](#-array-creation) | `np.array([1,2,3])` |
+| Checking size, shape, type | [📊 Array Properties](#-array-properties) | `arr.shape` |
+| Getting specific elements | [🎯 Indexing & Slicing](#-indexing--slicing) | `arr[0:5]` |
+| Math stuff (+, -, *, /) | [➕ Math Operations](#-math-operations) | `arr + 5` |
+| Sum, average, min, max | [📈 Aggregation](#-aggregation) | `np.mean(arr)` |
+| Reshape, transpose, flip | [🔄 Shape Manipulation](#-shape-manipulation) | `arr.reshape(2,3)` |
+| Putting arrays together | [🔗 Combining Arrays](#-combining-arrays) | `np.vstack([a,b])` |
+| Working with missing values | [🚫 NaN Handling](#-nan-handling) | `np.nanmean(arr)` |
+| Linear algebra stuff | [🧮 Matrix Operations](#-matrix-operations) | `arr @ other` |
+
+</div>
 
 ---
 
 ## 🏗️ Array Creation
 
-**Just want an array? Pick your flavor:**
+> **🎨 Just want an array? Pick your flavor!**
+
+<details open>
+<summary><b>📦 From Lists & Sequences</b></summary>
 
 ```python
 # From a list
 np.array([1, 2, 3])
 
+# 2D array from nested lists
+np.array([[1, 2], [3, 4]])
+```
+</details>
+
+<details open>
+<summary><b>🔢 Zeros, Ones & Filled Arrays</b></summary>
+
+```python
 # Full of zeros or ones
 np.zeros(5)                  # [0. 0. 0. 0. 0.]
 np.ones((2, 3))              # All 1's, shape 2×3
+np.full((2, 2), 7)           # All 7's in 2×2 array
+```
+</details>
 
+<details open>
+<summary><b>🔢 Sequential & Evenly Spaced</b></summary>
+
+```python
 # Counting up (like range())
 np.arange(10)                # 0, 1, 2, ... 9
 np.arange(2, 10, 2)          # 2, 4, 6, 8
 
 # Evenly spaced numbers
 np.linspace(0, 1, 5)         # 5 numbers between 0-1
+```
+</details>
 
-# Special matrices
-np.eye(3)                    # Identity matrix (1's on diagonal)
-np.diag([1, 2, 3])           # Diagonal matrix
+<details open>
+<summary><b>🎲 Random Arrays</b></summary>
 
-# Random stuff
+```python
 np.random.rand(2, 3)         # Random decimals 0-1
 np.random.randint(0, 10, 5)  # Random integers 0-10
-np.random.normal(0, 1, 100)  # Normal distribution
-
-# Fill with same value
-np.full((2, 2), 7)           # All 7's in 2×2 array
+np.random.normal(0, 1, 100)  # Normal distribution (mean=0, std=1)
+np.random.choice([1,2,3], 5) # Random selection
 ```
+</details>
+
+<details open>
+<summary><b>🎯 Special Matrices</b></summary>
+
+```python
+np.eye(3)                    # Identity matrix (1's on diagonal)
+np.diag([1, 2, 3])           # Diagonal matrix
+np.tri(3)                    # Lower triangular matrix
+```
+</details>
 
 ---
 
 ## 📊 Array Properties
 
-**What's inside your array?**
+> **🔍 What's inside your array?**
 
+### 📐 **Shape & Dimensions**
 ```python
 arr.shape          # (rows, columns) - like "3×5"
 arr.ndim           # How many dimensions? 1D, 2D, 3D, etc
 arr.size           # Total number of elements
+len(arr)           # Length (rows only)
+```
+
+### 🧬 **Data Type & Memory**
+```python
 arr.dtype          # Data type: int64, float32, etc
 arr.itemsize       # Bytes per item
-arr.nbytes         # Total memory used
+arr.nbytes         # Total memory used = size × itemsize
+```
 
-# Quick checks
-len(arr)           # Length (rows only)
+### ⚡ **Quick Transformations**
+```python
 arr.T              # Transpose (flip rows ↔ columns)
+arr.flat           # 1D iterator over array
 ```
 
 ---
 
 ## 🎯 Indexing & Slicing
 
-**Grabbing specific pieces from your array:**
+> **✂️ Grabbing specific pieces from your array**
 
+### 🎪 **Single Elements**
 ```python
-# Single element
 arr[0]             # First element
 arr[-1]            # Last element
 arr[2]             # Element at index 2
+```
 
-# Slicing (get a range)
+### 🔪 **Slicing (Ranges)**
+```python
 arr[1:3]           # Elements 1 and 2 (NOT 3)
 arr[0:5:2]         # Elements 0, 2, 4 (every 2nd)
 arr[::2]           # Every 2nd element from start to end
+arr[::-1]          # Reverse the array
+```
 
-# 2D arrays (rows and columns)
+### 🎛️ **2D Arrays (Rows & Columns)**
+```python
 arr[0, 0]          # Row 0, Column 0
 arr[0, :]          # Entire row 0
 arr[:, 1]          # Entire column 1
 arr[1:3, 0:2]      # Rows 1-2, Columns 0-1
+```
 
-# Smart filtering
+### 🎭 **Boolean Indexing (Smart Filtering)**
+```python
 arr[arr > 5]       # All elements greater than 5
 arr[arr % 2 == 0]  # All even numbers
+arr[(arr > 5) & (arr < 10)]  # Multiple conditions
+```
 
-# Pick specific positions
+### 🎯 **Fancy Indexing**
+```python
 arr[[0, 2, 4]]     # Elements at positions 0, 2, 4
+arr[[True, False, True]]  # Boolean array
 ```
 
 ---
 
 ## ➕ Math Operations
 
-**Do math on your whole array at once!**
+> **🧮 Do math on your whole array at once! (Vectorized = FAST!)**
 
+### 🔢 **Basic Arithmetic**
 ```python
-# Basic arithmetic (works on ALL elements)
 arr + 5            # Add 5 to everything
-arr - 10           # Subtract 10
-arr * 2            # Multiply by 2
-arr / 2            # Divide by 2
+arr - 10           # Subtract 10 from everything
+arr * 2            # Multiply everything by 2
+arr / 2            # Divide everything by 2
 arr ** 2           # Square everything
+arr % 3            # Modulo (remainder)
+arr // 2           # Floor division
+```
 
-# Powers and roots
+### 📐 **Powers & Roots**
+```python
 np.sqrt(arr)       # Square root
-np.exp(arr)        # e raised to power
-np.log(arr)        # Natural logarithm
-np.abs(arr)        # Absolute value
+np.cbrt(arr)       # Cube root
+np.power(arr, 3)   # Raise to power
+np.exp(arr)        # e^x (exponential)
+np.log(arr)        # Natural logarithm (ln)
+np.log10(arr)      # Base-10 logarithm
+```
 
-# Trigonometry
+### 🌊 **Trigonometry**
+```python
 np.sin(arr)        # Sine
 np.cos(arr)        # Cosine
 np.tan(arr)        # Tangent
+np.arcsin(arr)     # Inverse sine
+```
 
-# Useful tricks
-arr.mean()         # Average
-arr.max()          # Biggest number
-arr.min()          # Smallest number
+### 🎯 **Absolute & Rounding**
+```python
+np.abs(arr)        # Absolute value
+np.round(arr, 2)   # Round to 2 decimals
+np.floor(arr)      # Round down
+np.ceil(arr)       # Round up
+```
+
+### 💡 **Useful Tricks**
+```python
 arr - arr.mean()   # Center the data (subtract average)
+(arr - arr.min()) / (arr.max() - arr.min())  # Normalize to 0-1
 ```
 
 ---
@@ -351,36 +432,66 @@ arr2 = data['b']
 
 ## ⚡ Performance Tips
 
-**Make your code FAST:**
+> **🚀 Make your code BLAZINGLY FAST!**
 
+### ✅ **FAST - Vectorized Operations (USE THESE!)**
 ```python
-# ✅ FAST - Vectorized (use these!)
-result = arr + 1
-result = np.sum(arr, axis=0)
-result = arr[arr > 5]
-
-# ❌ SLOW - Python loops (avoid!)
-result = np.array([x + 1 for x in arr])
-result = sum([x for x in arr])
-
-# Memory tricks
-arr = arr.astype(np.float32)   # Smaller than float64
-arr_copy = arr.copy()          # Independent array
-result = np.empty((1000, 1000))  # Pre-allocate
+result = arr + 1               # ⚡ 100x faster than loops
+result = np.sum(arr, axis=0)   # ⚡ Built-in C optimization
+result = arr[arr > 5]          # ⚡ Boolean indexing
+result = arr * arr             # ⚡ Element-wise operations
 ```
+
+### ❌ **SLOW - Python Loops (AVOID!)**
+```python
+result = np.array([x + 1 for x in arr])  # ❌ 100x slower!
+result = sum([x for x in arr])            # ❌ Very slow
+for i in range(len(arr)):                 # ❌ Don't loop!
+    arr[i] = arr[i] + 1
+```
+
+### 💾 **Memory Optimization**
+```python
+# Use smaller data types
+arr = arr.astype(np.float32)   # Half the size of float64
+arr = arr.astype(np.int16)     # Smaller than int64
+
+# Pre-allocate arrays
+result = np.empty((1000, 1000))  # Faster than append
+result = np.zeros((1000, 1000))  # Initialize with zeros
+
+# Copy when needed
+arr_copy = arr.copy()          # Independent array
+view = arr[:]                  # Shared memory (faster)
+```
+
+### 🎯 **Speed Comparison**
+| Operation | Python Loop | NumPy Vectorized | Speedup |
+|-----------|-------------|------------------|----------|
+| Add 1 to 1M elements | ~100ms | ~1ms | **100x** |
+| Sum 1M elements | ~80ms | ~0.5ms | **160x** |
+| Matrix multiply | ~10s | ~50ms | **200x** |
 
 ---
 
 ## 🎓 Common Gotchas
 
-| 💥 Problem | ✅ Fix |
-|----------|--------|
-| Shape mismatch | Print `arr.shape` first! |
-| Accidentally modify copy | Use `.copy()` | 
-| Slow loops | Use vectorized operations |
-| Floating point bugs | Use `np.allclose()` not `==` |
-| Memory bloat | Use `float32` instead of `float64` |
-| Views vs copies | Remember `.copy()` makes independent copy |
+> **⚠️ Avoid these common mistakes!**
+
+<div align="center">
+
+| 💥 **Problem** | ✅ **Solution** | 📝 **Example** |
+|:--------------|:---------------|:---------------|
+| Shape mismatch | Print `arr.shape` first! | `print(arr.shape)` |
+| Accidentally modify original | Use `.copy()` | `new_arr = arr.copy()` |
+| Slow Python loops | Use vectorized operations | `arr + 1` not `[x+1 for x in arr]` |
+| Floating point comparison | Use `np.allclose()` not `==` | `np.allclose(a, b)` |
+| Memory bloat | Use `float32` instead of `float64` | `arr.astype(np.float32)` |
+| Views vs copies confusion | Remember `.copy()` creates independent array | `view = arr[:]` vs `copy = arr.copy()` |
+| Integer division issues | Use floats or `np.true_divide()` | `arr / 2.0` or `np.true_divide(arr, 2)` |
+| Out of bounds indexing | Check array length first | `if i < len(arr): arr[i]` |
+
+</div>
 
 ---
 
@@ -398,7 +509,29 @@ np.bool_                                        # True/False
 
 <div align="center">
 
-### Need more details? 
-**[← Go Back to README](README.md)** | **[→ Full Tutorial](src/code.ipynb)**
+## 🎉 That's It! You're Now a NumPy Pro!
+
+### 📚 **Next Steps**
+
+[![← Go Back to README](https://img.shields.io/badge/←_Go_Back_to_README-667EEA?style=for-the-badge)](README.md)
+[![→ Full Tutorial](https://img.shields.io/badge/→_Full_Tutorial-764BA2?style=for-the-badge)](src/code.ipynb)
+[![⭐ Star on GitHub](https://img.shields.io/badge/⭐_Star_on_GitHub-181717?style=for-the-badge&logo=github)](https://github.com/DhruvilThummar/Numpy)
+
+---
+
+### 💡 **Quick Tips to Remember**
+
+```python
+# The 3 Golden Rules of NumPy:
+1. Always use vectorized operations (avoid Python loops!)
+2. Check array.shape before operating
+3. Use .copy() when you don't want to modify the original
+```
+
+---
+
+**Made with ❤️ for the NumPy community**
+
+*Happy Array Computing! 🚀*
 
 </div>

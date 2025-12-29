@@ -1,0 +1,482 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install numpy jupyter nbconvert markdown
+
+      - name: Setup docs directory
+        run: |
+          mkdir -p docs
+
+      - name: Convert Notebook to HTML
+        run: |
+          jupyter nbconvert --to html src/code.ipynb --output-dir=docs --output=tutorial.html
+          
+      - name: Convert Markdown to HTML
+        run: |
+          python3 << 'EOF'
+          import markdown
+          import os
+          
+          # Custom HTML template
+          template = '''<!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>{title} - NumPy Crash Notes</title>
+              <link rel="stylesheet" href="style.css">
+          </head>
+          <body>
+              <nav class="navbar">
+                  <div class="container">
+                      <div class="nav-brand">
+                          <span class="logo-icon">📊</span>
+                          <span class="logo-text">NumPy Crash Notes</span>
+                      </div>
+                      <div class="nav-links">
+                          <a href="index.html" class="nav-link">Home</a>
+                          <a href="tutorial.html" class="nav-link">Tutorial</a>
+                          <a href="quick-reference.html" class="nav-link">Quick Reference</a>
+                          <a href="https://github.com/DhruvilThummar/Numpy" target="_blank" class="nav-link">GitHub</a>
+                      </div>
+                  </div>
+              </nav>
+              <div class="content-wrapper">
+                  <div class="markdown-content">
+                      {content}
+                  </div>
+              </div>
+              <footer class="footer">
+                  <div class="container">
+                      <div class="footer-content">
+                          <div class="footer-brand">
+                              <span class="logo-icon">📊</span>
+                              <span class="logo-text">NumPy Crash Notes</span>
+                          </div>
+                          <div class="footer-links">
+                              <a href="https://github.com/DhruvilThummar/Numpy" target="_blank">GitHub</a>
+                              <a href="https://numpy.org/doc/stable/" target="_blank">NumPy Docs</a>
+                          </div>
+                          <div class="footer-text">Made with ❤️ for the NumPy community</div>
+                      </div>
+                  </div>
+              </footer>
+          </body>
+          </html>'''
+          
+          # Convert README.md
+          with open('README.md', 'r', encoding='utf-8') as f:
+              readme_content = f.read()
+          
+          # Replace relative links in README
+          readme_content = readme_content.replace('](src/code.ipynb)', '](tutorial.html)')
+          readme_content = readme_content.replace('](QUICK_REFERENCE.md)', '](quick-reference.html)')
+          
+          readme_html = markdown.markdown(readme_content, extensions=['tables', 'fenced_code', 'codehilite'])
+          with open('docs/index.html', 'w', encoding='utf-8') as f:
+              f.write(template.format(title='Home', content=readme_html))
+          
+          # Convert QUICK_REFERENCE.md
+          with open('QUICK_REFERENCE.md', 'r', encoding='utf-8') as f:
+              quick_ref_content = f.read()
+          
+          # Replace relative links in QUICK_REFERENCE
+          quick_ref_content = quick_ref_content.replace('](README.md)', '](index.html)')
+          quick_ref_content = quick_ref_content.replace('](src/code.ipynb)', '](tutorial.html)')
+          
+          quick_ref_html = markdown.markdown(quick_ref_content, extensions=['tables', 'fenced_code', 'codehilite'])
+          with open('docs/quick-reference.html', 'w', encoding='utf-8') as f:
+              f.write(template.format(title='Quick Reference', content=quick_ref_html))
+          
+          print("✅ Markdown files converted successfully!")
+          EOF
+
+      - name: Create CSS file
+        run: |
+          cat > docs/style.css << 'EOF'
+          /* Import fonts */
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500;700&display=swap');
+          
+          /* Reset and base styles */
+          * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+          }
+          
+          body {
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+              line-height: 1.6;
+              color: #1e293b;
+              background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+              min-height: 100vh;
+          }
+          
+          /* Navigation */
+          .navbar {
+              background: rgba(255, 255, 255, 0.95);
+              backdrop-filter: blur(10px);
+              box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+              position: sticky;
+              top: 0;
+              z-index: 1000;
+              padding: 1rem 0;
+          }
+          
+          .container {
+              max-width: 1200px;
+              margin: 0 auto;
+              padding: 0 2rem;
+          }
+          
+          .navbar .container {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+          }
+          
+          .nav-brand {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 1.5rem;
+              font-weight: 900;
+              color: #1e293b;
+          }
+          
+          .logo-icon {
+              font-size: 2rem;
+          }
+          
+          .nav-links {
+              display: flex;
+              gap: 2rem;
+          }
+          
+          .nav-link {
+              color: #475569;
+              text-decoration: none;
+              font-weight: 600;
+              transition: all 0.3s ease;
+              position: relative;
+          }
+          
+          .nav-link:hover {
+              color: #667eea;
+          }
+          
+          .nav-link.active {
+              color: #667eea;
+          }
+          
+          /* Content wrapper */
+          .content-wrapper {
+              max-width: 1200px;
+              margin: 2rem auto;
+              padding: 2rem;
+          }
+          
+          .markdown-content {
+              background: white;
+              border-radius: 16px;
+              padding: 3rem;
+              box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          }
+          
+          /* Typography */
+          .markdown-content h1 {
+              font-size: 3rem;
+              font-weight: 900;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              margin-bottom: 1.5rem;
+              line-height: 1.2;
+          }
+          
+          .markdown-content h2 {
+              font-size: 2rem;
+              font-weight: 700;
+              color: #1e293b;
+              margin: 2.5rem 0 1rem;
+              padding-bottom: 0.5rem;
+              border-bottom: 3px solid #667eea;
+          }
+          
+          .markdown-content h3 {
+              font-size: 1.5rem;
+              font-weight: 600;
+              color: #334155;
+              margin: 2rem 0 1rem;
+          }
+          
+          .markdown-content p {
+              margin-bottom: 1.5rem;
+              color: #475569;
+              font-size: 1.1rem;
+          }
+          
+          .markdown-content a {
+              color: #667eea;
+              text-decoration: none;
+              font-weight: 600;
+              transition: all 0.3s ease;
+          }
+          
+          .markdown-content a:hover {
+              color: #764ba2;
+              text-decoration: underline;
+          }
+          
+          /* Code blocks */
+          .markdown-content code {
+              background: #1e293b;
+              color: #e2e8f0;
+              padding: 0.2rem 0.5rem;
+              border-radius: 4px;
+              font-family: 'Fira Code', monospace;
+              font-size: 0.9rem;
+          }
+          
+          .markdown-content pre {
+              background: #1e293b;
+              color: #e2e8f0;
+              padding: 1.5rem;
+              border-radius: 12px;
+              overflow-x: auto;
+              margin: 1.5rem 0;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          }
+          
+          .markdown-content pre code {
+              background: none;
+              padding: 0;
+              font-size: 0.95rem;
+              line-height: 1.6;
+          }
+          
+          /* Lists */
+          .markdown-content ul, .markdown-content ol {
+              margin: 1.5rem 0;
+              padding-left: 2rem;
+          }
+          
+          .markdown-content li {
+              margin: 0.75rem 0;
+              color: #475569;
+          }
+          
+          /* Tables */
+          .markdown-content table {
+              width: 100%;
+              border-collapse: separate;
+              border-spacing: 0;
+              margin: 2rem 0;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          }
+          
+          .markdown-content th {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+              padding: 1rem;
+              text-align: left;
+              font-weight: 600;
+          }
+          
+          .markdown-content td {
+              padding: 1rem;
+              border-bottom: 1px solid #e2e8f0;
+              background: white;
+          }
+          
+          .markdown-content tr:last-child td {
+              border-bottom: none;
+          }
+          
+          .markdown-content tr:hover td {
+              background: #f8fafc;
+          }
+          
+          /* Blockquotes */
+          .markdown-content blockquote {
+              border-left: 4px solid #667eea;
+              padding: 1rem 1.5rem;
+              margin: 1.5rem 0;
+              background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+              border-radius: 8px;
+          }
+          
+          /* Images */
+          .markdown-content img {
+              max-width: 100%;
+              height: auto;
+              border-radius: 8px;
+              margin: 1.5rem 0;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          }
+          
+          /* Badges */
+          .markdown-content img[src*="shields.io"],
+          .markdown-content img[src*="badge"] {
+              box-shadow: none;
+              margin: 0.25rem;
+              display: inline-block;
+          }
+          
+          /* Details/Summary */
+          .markdown-content details {
+              background: #f8fafc;
+              border-radius: 8px;
+              padding: 1rem;
+              margin: 1rem 0;
+              border: 2px solid #e2e8f0;
+          }
+          
+          .markdown-content summary {
+              cursor: pointer;
+              font-weight: 600;
+              color: #334155;
+              user-select: none;
+          }
+          
+          .markdown-content details[open] summary {
+              margin-bottom: 1rem;
+              color: #667eea;
+          }
+          
+          /* Footer */
+          .footer {
+              background: rgba(30, 41, 59, 0.95);
+              color: white;
+              padding: 3rem 0;
+              margin-top: 4rem;
+          }
+          
+          .footer-content {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              flex-wrap: wrap;
+              gap: 2rem;
+          }
+          
+          .footer-brand {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 1.25rem;
+              font-weight: 700;
+          }
+          
+          .footer-links {
+              display: flex;
+              gap: 2rem;
+          }
+          
+          .footer-links a {
+              color: #cbd5e1;
+              text-decoration: none;
+              transition: all 0.3s ease;
+          }
+          
+          .footer-links a:hover {
+              color: white;
+          }
+          
+          .footer-text {
+              color: #94a3b8;
+          }
+          
+          /* Responsive design */
+          @media (max-width: 768px) {
+              .nav-links {
+                  gap: 1rem;
+                  font-size: 0.9rem;
+              }
+              
+              .markdown-content {
+                  padding: 1.5rem;
+              }
+              
+              .markdown-content h1 {
+                  font-size: 2rem;
+              }
+              
+              .markdown-content h2 {
+                  font-size: 1.5rem;
+              }
+              
+              .footer-content {
+                  flex-direction: column;
+                  text-align: center;
+              }
+          }
+          
+          /* Scrollbar styling */
+          ::-webkit-scrollbar {
+              width: 12px;
+              height: 12px;
+          }
+          
+          ::-webkit-scrollbar-track {
+              background: #f1f5f9;
+          }
+          
+          ::-webkit-scrollbar-thumb {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              border-radius: 6px;
+          }
+          
+          ::-webkit-scrollbar-thumb:hover {
+              background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+          }
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './docs'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
