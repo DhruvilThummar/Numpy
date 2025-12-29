@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NumPy Crash Notes - Master NumPy in 2-4 hours">
+    <title>NumPy Crash Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <style>
+        :root {
+            --bg: #0f1419;
+            --card-bg: #1a1f28;
+            --text: #ffffff;
+            --text-bright: #f5f5f5;
+            --muted: #b4c4d9;
+            --accent: #60a5fa;
+            --accent-2: #7dd3fc;
+            --border: rgba(255,255,255,0.12);
+            --shadow: 0 8px 30px rgba(3, 6, 12, 0.6);
+            --code-bg: #1e2836;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text-bright);
+            background: var(--bg);
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-2); }
+
+        .app {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            grid-template-columns: 280px 1fr;
+            grid-template-areas:
+                "header header"
+                "sidebar main";
+            height: 100vh;
+        }
+
+        /* Header */
+        header {
+            grid-area: header;
+            background: linear-gradient(180deg, var(--card-bg) 0%, rgba(26, 31, 40, 0.8) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--text-bright);
+        }
+
+        .brand-icon { font-size: 2rem; }
+
+        .search {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            max-width: 600px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-bright);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+        }
+
+        .search input::placeholder { color: var(--muted); opacity: 0.8; }
+        .search input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        /* Sidebar */
+        aside.sidebar {
+            grid-area: sidebar;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(0, 0, 0, 0));
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .sidebar-section {
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0.75rem 0.5rem 1.5rem;
+        }
+
+        .nav-menu li {
+            padding: 0;
+            margin: 0.5rem 0;
+        }
+
+        .nav-menu button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-bright);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu button:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border);
+            transform: translateX(4px);
+        }
+
+        .nav-menu button.active {
+            background: rgba(96, 165, 250, 0.18);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Main Content */
+        main {
+            grid-area: main;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .content-view {
+            display: none;
+        }
+
+        .content-view.active {
+            display: block;
+        }
+
+        /* Article Styles */
+        article {
+            max-width: 900px;
+            line-height: 1.8;
+        }
+
+        article h1 {
+            font-size: 2.75rem;
+            color: var(--text-bright);
+            margin: 1.5rem 0;
+            line-height: 1.2;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        article h2 {
+            font-size: 2rem;
+            color: var(--text-bright);
+            margin: 2rem 0 1rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.75rem;
+            margin-top: 2.5rem;
+        }
+
+        article h3 {
+            font-size: 1.5rem;
+            color: var(--text-bright);
+            margin: 1.75rem 0 0.75rem;
+        }
+
+        article h4 {
+            font-size: 1.2rem;
+            color: var(--text-bright);
+            margin: 1.25rem 0 0.5rem;
+        }
+
+        article p {
+            margin: 1rem 0;
+            color: var(--text-bright);
+            line-height: 1.8;
+        }
+
+        article ul, article ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        article li {
+            margin-bottom: 0.5rem;
+            color: var(--text-bright);
+            line-height: 1.7;
+        }
+
+        article code {
+            background: rgba(96, 165, 250, 0.15);
+            color: #9ddfff;
+            padding: 0.3em 0.6em;
+            border-radius: 5px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        article pre {
+            background: var(--code-bg);
+            color: var(--text-bright);
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+        }
+
+        article pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        article a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        article a:hover {
+            border-bottom-color: var(--accent);
+            color: var(--accent-2);
+        }
+
+        article table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        article thead {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+            color: #0f1419;
+        }
+
+        article th {
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        article td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-bright);
+        }
+
+        article tbody tr:hover {
+            background: rgba(96, 165, 250, 0.05);
+        }
+
+        article img {
+            max-width: 100%;
+            height: auto;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+        }
+
+        article hr {
+            margin: 2.5rem 0;
+            border: none;
+            border-top: 1px solid var(--border);
+        }
+
+        article strong {
+            color: var(--accent-2);
+            font-weight: 600;
+        }
+
+        /* Code View */
+        .code-viewer {
+            max-width: 1000px;
+        }
+
+        .code-cell {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .cell-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cell-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            background: rgba(96, 165, 250, 0.15);
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+        }
+
+        .cell-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+            color: #0f1419;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-bright);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .cell-description {
+            background: rgba(96, 165, 250, 0.08);
+            border-left: 3px solid var(--accent);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            color: var(--text-bright);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .cell-description h1,
+        .cell-description h2,
+        .cell-description h3 {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: #1a1f2e;
+            border-radius: 10px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .code-block pre {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .code-block code {
+            background: transparent;
+            color: var(--text-bright);
+            padding: 0;
+            font-size: inherit;
+        }
+
+        .cell-output {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 3px solid #10b981;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #a9d9c7;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .cell-output-title {
+            color: #10b981;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cell-counter {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* Quick Reference Grid */
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .ref-card {
+            background: rgba(96, 165, 250, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .ref-card:hover {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .ref-card h4 {
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 980px) {
+            .app {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "main";
+            }
+
+            aside.sidebar {
+                display: none;
+            }
+
+            header {
+                padding: 0.75rem 1rem;
+            }
+
+            .brand { font-size: 1.2rem; }
+            .brand-icon { font-size: 1.5rem; }
+            .search { max-width: 100%; }
+
+            main {
+                padding: 1.5rem;
+            }
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <div class="brand">
+                <span class="brand-icon">📊</span>
+                <span>NumPy Crash</span>
+            </div>
+            <form class="search" id="searchForm">
+                <input type="search" id="searchInput" placeholder="Search..." autocomplete="off">
+            </form>
+        </header>
+
+        <aside class="sidebar">
+            <div class="sidebar-section">Content</div>
+            <ul class="nav-menu">
+                <li><button class="nav-btn active" data-view="readme">📖 Tutorial</button></li>
+                <li><button class="nav-btn" data-view="quickref">⚡ Quick Reference</button></li>
+                <li><button class="nav-btn" data-view="code">💻 Code Examples</button></li>
+            </ul>
+        </aside>
+
+        <main id="mainContent">
+            <!-- README View -->
+            <div class="content-view active" id="readme-view">
+                <article id="readme-content"></article>
+            </div>
+
+            <!-- Quick Reference View -->
+            <div class="content-view" id="quickref-view">
+                <article id="quickref-content"></article>
+            </div>
+
+            <!-- Code Examples View -->
+            <div class="content-view" id="code-view">
+                <div class="code-viewer">
+                    <h1>💻 Interactive Code Examples</h1>
+                    <p style="color: var(--muted); font-size: 1.05rem; margin-bottom: 2rem;">Navigate through 38 hands-on NumPy examples with live code and outputs</p>
+                    <div id="code-content"></div>
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" id="prevBtn">⬅️ Previous</button>
+                        <span class="cell-counter" id="cellCounter">Cell 1 of 38</span>
+                        <button class="btn" id="nextBtn">Next ➡️</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <a href="https://github.com/DhruvilThummar/Numpy" target="_blank" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 999; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4); transition: all 0.3s ease; color: #0f1419; font-size: 1.5rem;" title="View on GitHub" class="fab-github">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 .5C5.65.5.5 5.65.5 12.02c0 5.09 3.29 9.4 7.86 10.93.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.35-1.3-1.7-1.3-1.7-1.06-.73.08-.72.08-.72 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.74 1.27 3.4.98.11-.75.41-1.26.75-1.55-2.55-.29-5.23-1.28-5.23-5.71 0-1.26.45-2.29 1.2-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 2.9-.39c.99 0 1.99.13 2.92.39 2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.77.12 3.06.75.8 1.2 1.83 1.2 3.09 0 4.44-2.69 5.41-5.25 5.69.42.37.8 1.1.8 2.22 0 1.6-.01 2.88-.01 3.27 0 .31.21.68.8.56A10.53 10.53 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+        </svg>
+    </a>
+
+    <script>
+        const state = {
+            readmeData: null,
+            quickrefData: null,
+            notebookData: null,
+            currentView: 'readme',
+            currentCellIndex: 0,
+            totalCells: 0
+        };
+
+        // Fetch remote content
+        async function fetchContent(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.text();
+            } catch (error) {
+                console.error('Error fetching:', url, error);
+                return `<h2>⚠️ Could Not Load Content</h2><p>Error: ${error.message}</p>`;
+            }
+        }
+
+        // Convert Markdown to HTML
+        function markdownToHtml(md) {
+            let html = md;
+
+            // Headers
+            html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+            html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+            html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+
+            // Bold and Italic
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Links
+            html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+            // Code blocks
+            html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+            // Inline code
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Lists
+            html = html.replace(/^\* (.*?)$/gm, '<li>$1</li>');
+            html = html.replace(/^\d+\. (.*?)$/gm, '<li>$1</li>');
+            html = html.replace(/(<li>.*?<\/li>)/s, '<ul>$1</ul>');
+
+            // Horizontal rules
+            html = html.replace(/^---$/gm, '<hr>');
+
+            // Paragraphs
+            html = html.replace(/\n\n/g, '</p><p>');
+            html = '<p>' + html + '</p>';
+
+            // Clean up
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p>(<h|<ul|<ol|<pre|<hr|<table)/g, '$1');
+            html = html.replace(/(h[1-6]|ul|ol|pre|hr|table)><\/p>/g, '$1>');
+
+            return html;
+        }
+
+        // Load README
+        async function loadReadme() {
+            if (state.readmeData) {
+                document.getElementById('readme-content').innerHTML = state.readmeData;
+                return;
+            }
+
+            const url = 'https://raw.githubusercontent.com/DhruvilThummar/Numpy/main/README.md';
+            const md = await fetchContent(url);
+            state.readmeData = markdownToHtml(md);
+            document.getElementById('readme-content').innerHTML = state.readmeData;
+        }
+
+        // Load Quick Reference
+        async function loadQuickRef() {
+            if (state.quickrefData) {
+                document.getElementById('quickref-content').innerHTML = state.quickrefData;
+                return;
+            }
+
+            const url = 'https://raw.githubusercontent.com/DhruvilThummar/Numpy/main/QUICK_REFERENCE.md';
+            const md = await fetchContent(url);
+            state.quickrefData = markdownToHtml(md);
+            document.getElementById('quickref-content').innerHTML = state.quickrefData;
+        }
+
+        // Load Code Examples
+        async function loadCode() {
+            if (state.notebookData) {
+                displayCurrentCell();
+                return;
+            }
+
+            try {
+                const url = 'https://raw.githubusercontent.com/DhruvilThummar/Numpy/main/src/code.ipynb';
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const notebook = await response.json();
+                
+                state.notebookData = notebook.cells || [];
+                state.totalCells = state.notebookData.length;
+                state.currentCellIndex = 0;
+                
+                displayCurrentCell();
+            } catch (error) {
+                console.error('Error loading notebook:', error);
+                document.getElementById('code-content').innerHTML = `
+                    <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; padding: 1.5rem; border-radius: 8px;">
+                        <h3 style="color: #ef4444; margin-top: 0;">⚠️ Could Not Load Notebook</h3>
+                        <p>Error: ${error.message}</p>
+                        <p>Please visit the <a href="https://github.com/DhruvilThummar/Numpy" target="_blank">GitHub repository</a> to view the code.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Display current cell
+        function displayCurrentCell() {
+            const cell = state.notebookData[state.currentCellIndex];
+            const cellNum = state.currentCellIndex + 1;
+            
+            let html = '';
+            
+            if (cell.cell_type === 'markdown') {
+                // Markdown cell - show as description
+                const markdown = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
+                html = `
+                    <div class="code-cell">
+                        <div class="cell-header">
+                            <div class="cell-number">📝 Section ${cellNum}</div>
+                            <div class="cell-actions">
+                                <button class="btn btn-secondary" onclick="copyMarkdown()">📋 Copy</button>
+                            </div>
+                        </div>
+                        <div class="cell-description">
+                            ${markdownToHtml(markdown)}
+                        </div>
+                    </div>
+                `;
+            } else if (cell.cell_type === 'code') {
+                // Code cell
+                const code = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
+                const hasOutput = cell.outputs && cell.outputs.length > 0;
+                
+                let outputHtml = '';
+                if (hasOutput) {
+                    const output = cell.outputs[0];
+                    let outputText = '';
+                    
+                    if (output.text) {
+                        outputText = Array.isArray(output.text) ? output.text.join('') : output.text;
+                    } else if (output.data && output.data['text/plain']) {
+                        outputText = Array.isArray(output.data['text/plain']) 
+                            ? output.data['text/plain'].join('') 
+                            : output.data['text/plain'];
+                    }
+                    
+                    if (outputText) {
+                        outputHtml = `
+                            <div class="cell-output">
+                                <div class="cell-output-title">▶️ Output</div>
+                                ${escapeHtml(outputText)}
+                            </div>
+                        `;
+                    }
+                }
+                
+                html = `
+                    <div class="code-cell">
+                        <div class="cell-header">
+                            <div class="cell-number">🐍 Code ${cellNum}</div>
+                            <div class="cell-actions">
+                                <button class="btn btn-secondary" onclick="copyCode()">📋 Copy Code</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code class="language-python">${escapeHtml(code)}</code></pre>
+                        </div>
+                        ${outputHtml}
+                    </div>
+                `;
+            }
+            
+            document.getElementById('code-content').innerHTML = html;
+            document.getElementById('cellCounter').textContent = `Cell ${cellNum} of ${state.totalCells}`;
+            
+            // Update button states
+            document.getElementById('prevBtn').disabled = state.currentCellIndex === 0;
+            document.getElementById('nextBtn').disabled = state.currentCellIndex === state.totalCells - 1;
+            
+            // Syntax highlighting
+            if (window.hljs) {
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+            }
+        }
+
+        // Navigation functions
+        function nextCell() {
+            if (state.currentCellIndex < state.totalCells - 1) {
+                state.currentCellIndex++;
+                displayCurrentCell();
+                document.querySelector('#code-view').scrollTop = 0;
+            }
+        }
+
+        function prevCell() {
+            if (state.currentCellIndex > 0) {
+                state.currentCellIndex--;
+                displayCurrentCell();
+                document.querySelector('#code-view').scrollTop = 0;
+            }
+        }
+
+        // Copy functions
+        function copyCode() {
+            const codeBlock = document.querySelector('.code-block code');
+            if (codeBlock) {
+                const code = codeBlock.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    const btn = event.target;
+                    const originalText = btn.textContent;
+                    btn.textContent = '✅ Copied!';
+                    setTimeout(() => btn.textContent = originalText, 2000);
+                });
+            }
+        }
+
+        function copyMarkdown() {
+            const desc = document.querySelector('.cell-description');
+            if (desc) {
+                const text = desc.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = event.target;
+                    const originalText = btn.textContent;
+                    btn.textContent = '✅ Copied!';
+                    setTimeout(() => btn.textContent = originalText, 2000);
+                });
+            }
+        }
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Switch views
+        function switchView(view) {
+            // Update active button
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.nav-btn[data-view="${view}"]`).classList.add('active');
+
+            // Hide all views
+            document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
+
+            // Show selected view
+            state.currentView = view;
+            
+            if (view === 'readme') {
+                loadReadme();
+                document.getElementById('readme-view').classList.add('active');
+            } else if (view === 'quickref') {
+                loadQuickRef();
+                document.getElementById('quickref-view').classList.add('active');
+            } else if (view === 'code') {
+                loadCode();
+                document.getElementById('code-view').classList.add('active');
+            }
+        }
+
+        // Event listeners
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchView(btn.dataset.view);
+            });
+        });
+
+        // Code navigation
+        document.getElementById('prevBtn').addEventListener('click', prevCell);
+        document.getElementById('nextBtn').addEventListener('click', nextCell);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (state.currentView === 'code') {
+                if (e.key === 'ArrowLeft') {
+                    prevCell();
+                } else if (e.key === 'ArrowRight') {
+                    nextCell();
+                }
+            }
+        });
+
+        // Search
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                const mainContent = document.getElementById('mainContent').innerText;
+                if (mainContent.toLowerCase().includes(query.toLowerCase())) {
+                    alert(`Found "${query}" on this page. Use Ctrl+F to find specific text.`);
+                } else {
+                    alert(`"${query}" not found in current view.`);
+                }
+            }
+        });
+
+        // Load initial content
+        loadReadme();
+    </script>
+</body>
+</html>
