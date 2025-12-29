@@ -101,6 +101,129 @@
             box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
         }
 
+        .mobile-nav { display: none; }
+
+        .mobile-menu-toggle {
+            display: none;
+            margin-left: auto;
+            padding: 0.6rem 0.85rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(96, 165, 250, 0.12);
+            color: var(--text-bright);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .mobile-menu-toggle:hover {
+            background: rgba(96, 165, 250, 0.18);
+            border-color: rgba(96, 165, 250, 0.5);
+            color: var(--accent-2);
+        }
+
+        .mobile-drawer-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 98;
+        }
+
+        .mobile-drawer-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobile-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 80%;
+            max-width: 320px;
+            height: 100vh;
+            background: rgba(17, 24, 39, 0.8);
+            border-left: 1px solid var(--border);
+            box-shadow: -12px 0 30px rgba(0, 0, 0, 0.35);
+            transform: translateX(100%);
+            transition: transform 0.28s ease;
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .mobile-drawer.open {
+            transform: translateX(0);
+        }
+
+        .mobile-drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.18), rgba(125, 211, 252, 0.15));
+            color: var(--text-bright);
+        }
+
+        .mobile-drawer-title {
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .mobile-drawer-close {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text-bright);
+            padding: 0.35rem 0.65rem;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .mobile-drawer-body {
+            padding: calc(1.25rem + env(safe-area-inset-top, 0px)) 1.25rem 1.25rem;
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .mobile-drawer-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.85rem 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(96, 165, 250, 0.12);
+            color: var(--text-bright);
+            font-weight: 700;
+            letter-spacing: 0.15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .mobile-drawer-btn:hover {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: rgba(96, 165, 250, 0.5);
+            transform: translateX(-2px);
+        }
+
+        .mobile-drawer-btn.active {
+            background: rgba(96, 165, 250, 0.22);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
         /* Sidebar */
         aside.sidebar {
             grid-area: sidebar;
@@ -181,7 +304,7 @@
         article h1 {
             font-size: 2rem;
             color: var(--text-bright);
-            margin: 1.5rem 0;
+            margin: 1rem 0 0.75rem;
             line-height: 1.2;
             background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
             -webkit-background-clip: text;
@@ -192,10 +315,10 @@
         article h2 {
             font-size: 1.5rem;
             color: var(--text-bright);
-            margin: 2rem 0 1rem;
+            margin: 1.5rem 0 0.75rem;
             border-bottom: 2px solid var(--accent);
-            padding-bottom: 0.75rem;
-            margin-top: 2.5rem;
+            padding-bottom: 0.6rem;
+            margin-top: 1.75rem;
         }
 
         article h3 {
@@ -211,19 +334,25 @@
         }
 
         article p {
-            margin: 1rem 0;
+            margin: 0.85rem 0;
             color: var(--text-bright);
             line-height: 1.7;
             font-size: 0.95rem;
         }
 
+        article > *:first-child { margin-top: 0; }
+        article h1 + h2,
+        article h1 + h3 { margin-top: 0.35rem; }
+        article h2 + p,
+        article h3 + p { margin-top: 0.5rem; }
+
         article ul, article ol {
-            margin: 1rem 0;
-            padding-left: 2rem;
+            margin: 0.75rem 0 0.95rem;
+            padding-left: 1.35rem;
         }
 
         article li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.35rem;
             color: var(--text-bright);
             line-height: 1.6;
             font-size: 0.95rem;
@@ -265,6 +394,12 @@
             transition: all 0.2s ease;
         }
 
+        article p a {
+            display: inline-block;
+            margin-right: 0.65rem;
+            margin-top: 0.25rem;
+        }
+
         article a:hover {
             border-bottom-color: var(--accent);
             color: var(--accent-2);
@@ -303,7 +438,7 @@
         article img {
             max-width: 100%;
             height: auto;
-            margin: 1.5rem 0;
+            margin: 0.75rem 0;
             border-radius: 10px;
         }
 
@@ -515,15 +650,34 @@
 
             header {
                 padding: 0.75rem 1rem;
+                position: sticky;
+                top: 0;
+                z-index: 90;
             }
 
-            .brand { font-size: 1.2rem; }
-            .brand-icon { font-size: 1.5rem; }
-            .search { max-width: 100%; }
+            .brand { font-size: 1.15rem; gap: 0.5rem; }
+            .brand-icon { font-size: 1.35rem; }
+            .search { display: none; }
+
+            .mobile-menu-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 44px;
+                min-height: 44px;
+            }
+
+            .nav-menu {
+                padding-top: 0.25rem;
+            }
 
             main {
-                padding: 1.5rem;
+                padding: 1.1rem;
             }
+
+            article h1 { font-size: 1.6rem; margin: 0.75rem 0 0.5rem; }
+            article h2 { font-size: 1.3rem; margin: 1.2rem 0 0.6rem; }
+            article p { font-size: 0.93rem; }
         }
 
         .hidden { display: none; }
@@ -609,7 +763,21 @@
             <form class="search" id="searchForm">
                 <input type="search" id="searchInput" placeholder="Search..." autocomplete="off">
             </form>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Open navigation">☰</button>
         </header>
+
+        <div class="mobile-drawer-backdrop" id="mobileDrawerBackdrop"></div>
+        <div class="mobile-drawer" id="mobileDrawer">
+            <div class="mobile-drawer-header">
+                <span class="mobile-drawer-title">Navigate</span>
+                <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close navigation">✕</button>
+            </div>
+            <div class="mobile-drawer-body">
+                <button class="mobile-drawer-btn" data-view="readme">📖 Tutorial</button>
+                <button class="mobile-drawer-btn" data-view="quickref">⚡ Quick Reference</button>
+                <button class="mobile-drawer-btn" data-view="code">💻 Code Examples</button>
+            </div>
+        </div>
 
         <aside class="sidebar">
             <div class="sidebar-section">Content</div>
@@ -703,27 +871,50 @@
         // Load README
         async function loadReadme() {
             if (state.readmeData) {
-                document.getElementById('readme-content').innerHTML = state.readmeData;
+                document.getElementById('readme-content').innerHTML = state.readmeData + getCtaButtons('readme');
                 return;
             }
 
             const url = 'https://raw.githubusercontent.com/DhruvilThummar/Numpy/main/README.md';
             const md = await fetchContent(url);
             state.readmeData = markdownToHtml(md);
-            document.getElementById('readme-content').innerHTML = state.readmeData;
+            document.getElementById('readme-content').innerHTML = state.readmeData + getCtaButtons('readme');
         }
 
         // Load Quick Reference
         async function loadQuickRef() {
             if (state.quickrefData) {
-                document.getElementById('quickref-content').innerHTML = state.quickrefData;
+                document.getElementById('quickref-content').innerHTML = state.quickrefData + getCtaButtons('quickref');
                 return;
             }
 
             const url = 'https://raw.githubusercontent.com/DhruvilThummar/Numpy/main/QUICK_REFERENCE.md';
             const md = await fetchContent(url);
             state.quickrefData = markdownToHtml(md);
-            document.getElementById('quickref-content').innerHTML = state.quickrefData;
+            document.getElementById('quickref-content').innerHTML = state.quickrefData + getCtaButtons('quickref');
+        }
+
+        // Generate CTA buttons HTML
+        function getCtaButtons(currentView) {
+            if (currentView === 'readme') {
+                return `
+                    <div class="cta-buttons" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+                        <button class="cta-btn cta-quickref" data-view="quickref" title="Go to Quick Reference Guide">
+                            <span class="cta-icon">⚡</span>
+                            Quick Guide
+                        </button>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="cta-buttons" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+                        <button class="cta-btn cta-tutorial" data-view="readme" title="Go to Full Tutorial">
+                            <span class="cta-icon">📚</span>
+                            Full Tutorial
+                        </button>
+                    </div>
+                `;
+            }
         }
 
         // Load Code Examples
@@ -854,20 +1045,10 @@
             
             html += `</div>`;
             
-            document.getElementById('code-content').innerHTML = html;
-            document.getElementById('cellCounter').textContent = `Section ${sectionNum} of ${sections.length}`;
-            
-            // Update button states
-            document.getElementById('prevBtn').disabled = state.currentCellIndex === 0;
-            document.getElementById('nextBtn').disabled = state.currentCellIndex === sections.length - 1;
-            
-            // Update total cells for navigation
             state.totalCells = sections.length;
-            
             document.getElementById('code-content').innerHTML = html;
-            document.getElementById('cellCounter').textContent = `Cell ${cellNum} of ${state.totalCells}`;
+            document.getElementById('cellCounter').textContent = `Section ${sectionNum} of ${state.totalCells}`;
             
-            // Update button states
             document.getElementById('prevBtn').disabled = state.currentCellIndex === 0;
             document.getElementById('nextBtn').disabled = state.currentCellIndex === state.totalCells - 1;
             
@@ -926,6 +1107,7 @@
             // Update active button
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.nav-btn[data-view="${view}"]`).classList.add('active');
+            document.querySelectorAll('.mobile-drawer-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
 
             // Hide all views
             document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
@@ -945,11 +1127,87 @@
             }
         }
 
+        function openMobileDrawer() {
+            document.getElementById('mobileDrawer').classList.add('open');
+            document.getElementById('mobileDrawerBackdrop').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileDrawer() {
+            document.getElementById('mobileDrawer').classList.remove('open');
+            document.getElementById('mobileDrawerBackdrop').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
         // Event listeners
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 switchView(btn.dataset.view);
             });
+        });
+
+        document.querySelectorAll('.mobile-drawer-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchView(btn.dataset.view);
+                closeMobileDrawer();
+            });
+        });
+
+        // Wire up CTA buttons (dynamically added)
+        document.addEventListener('click', (e) => {
+            const ctaBtn = e.target.closest('.cta-btn[data-view]');
+            if (ctaBtn) {
+                e.preventDefault();
+                switchView(ctaBtn.dataset.view);
+                document.getElementById('mainContent').scrollTo({ top: 0, behavior: 'smooth' });
+                closeMobileDrawer();
+                return;
+            }
+        });
+
+        document.getElementById('mobileMenuToggle').addEventListener('click', openMobileDrawer);
+        document.getElementById('mobileDrawerClose').addEventListener('click', closeMobileDrawer);
+        document.getElementById('mobileDrawerBackdrop').addEventListener('click', closeMobileDrawer);
+
+        // Fallback: if any rendered CTA gets data-nav-target, wire it up
+        document.body.addEventListener('click', (e) => {
+            const cta = e.target.closest('[data-nav-target]');
+            if (cta) {
+                e.preventDefault();
+                switchView(cta.dataset.navTarget);
+                closeMobileDrawer();
+                document.getElementById('mainContent').scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Handle CTA buttons/links from rendered markdown (e.g., Open Tutorial / Quick Guide)
+        document.addEventListener('click', (e) => {
+            const target = e.target.closest('a, button');
+            if (!target) return;
+
+            const dataView = target.dataset.view || target.dataset.navTarget;
+            const text = (target.textContent || '').trim().toLowerCase();
+
+            const wantsReadme = dataView === 'readme' || text.includes('tutorial') || text.includes('open tutorial') || text.includes('full tutorial');
+            const wantsQuickRef = dataView === 'quickref' || text.includes('quick guide') || text.includes('quick reference');
+
+            if (wantsReadme) {
+                e.preventDefault();
+                switchView('readme');
+                document.getElementById('mainContent').scrollTo({ top: 0, behavior: 'smooth' });
+                closeMobileDrawer();
+            } else if (wantsQuickRef) {
+                e.preventDefault();
+                switchView('quickref');
+                document.getElementById('mainContent').scrollTo({ top: 0, behavior: 'smooth' });
+                closeMobileDrawer();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeMobileDrawer();
+            }
         });
 
         // Code navigation
