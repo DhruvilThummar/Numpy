@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Quick Reference - NumPy Crash Notes">
+    <title>Quick Reference - NumPy Crash Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f1f5f9;
+            --card-bg: white;
+            --text: #1e293b;
+            --muted: #64748b;
+            --primary: #667eea;
+            --primary-dark: #764ba2;
+            --accent: #7dd3fc;
+            --success: #22c55e;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.6;
+        }
+
+        /* ===== Navigation ===== */
+        nav.navbar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-icon {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        /* ===== Main Content ===== */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* ===== Article Styles ===== */
+        article {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            line-height: 1.8;
+        }
+
+        article h1 {
+            font-size: 2.5rem;
+            color: var(--text);
+            margin: 1.5rem 0;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 1rem;
+        }
+
+        article h2 {
+            font-size: 2rem;
+            color: var(--text);
+            margin: 2rem 0 1rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.75rem;
+        }
+
+        article h3 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin: 1.5rem 0 1rem;
+            margin-top: 1.75rem;
+        }
+
+        article h4 {
+            font-size: 1.25rem;
+            color: var(--text);
+            margin: 1.25rem 0 0.75rem;
+        }
+
+        article p {
+            margin: 1.25rem 0;
+            color: var(--text);
+        }
+
+        article ul, article ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        article li {
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        article img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        article code {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+        article pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border-left: 4px solid var(--primary);
+        }
+
+        article pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        article table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        article thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        article th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        article td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        article tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        article a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        article a:hover {
+            border-bottom-color: var(--primary);
+        }
+
+        article hr {
+            margin: 2rem 0;
+            border: none;
+            border-top: 2px solid var(--border);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box strong {
+            color: var(--primary);
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 3px solid var(--primary);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        /* ===== Navigation Links ===== */
+        .nav-section {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border);
+        }
+
+        .nav-section a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-section a:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            main {
+                padding: 1rem;
+            }
+
+            article {
+                padding: 1.5rem;
+            }
+
+            article h1 {
+                font-size: 1.75rem;
+            }
+
+            article h2 {
+                font-size: 1.5rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .nav-section {
+                flex-direction: column;
+            }
+
+            .nav-section a {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <span class="nav-icon">📊</span>
+                NumPy Crash Notes
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="readme.html" class="nav-link">Tutorial</a>
+                <a href="quick-reference.html" class="nav-link">Quick Reference</a>
+                <a href="notebook.html" class="nav-link">Interactive Code</a>
+                <a href="https://github.com/DhruvilThummar/Numpy" target="_blank" class="nav-link">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <article class="markdown-content">
+<p>
+<div align="center">
+</p>
+<p>
+!<a href="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white">NumPy</a>
+!<a href="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">Python</a>
+</p>
+<p>
+<h1>🎯 NumPy Quick Reference</h1>
+</p>
+<p>
+<h3>⚡ The Ultimate Cheat Sheet ⚡</h3>
+<strong>Forget memorizing, just copy-paste what you need!</strong>
+</p>
+<p>
+<a href="https://img.shields.io/badge/←<em>Back</em>to_README-667EEA?style=for-the-badge&logoColor=white">![Back to README</a>](README.md)
+<a href="https://img.shields.io/badge/📖<em>Full</em>Tutorial-764BA2?style=for-the-badge&logoColor=white">![Full Tutorial</a>](src/code.ipynb)
+<a href="https://img.shields.io/badge/⭐<em>Star</em>on_GitHub-181717?style=for-the-badge&logo=github">![GitHub</a>](https://github.com/DhruvilThummar/Numpy)
+</p>
+<p>
+</div>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🗂️ Find What You Need</h2>
+</p>
+<p>
+<div align="center">
+</p>
+<p>
+| 🔍 <strong>Looking for...</strong> | 🎯 <strong>Jump to Section</strong> | ⚡ <strong>Quick Action</strong> |
+|:---------------------|:----------------------|:-------------------|
+| Making arrays from scratch | <a href="#-array-creation">🏗️ Array Creation</a> | `np.array([1,2,3])` |
+| Checking size, shape, type | <a href="#-array-properties">📊 Array Properties</a> | `arr.shape` |
+| Getting specific elements | <a href="#-indexing--slicing">🎯 Indexing & Slicing</a> | `arr[0:5]` |
+| Math stuff (+, -, *, /) | <a href="#-math-operations">➕ Math Operations</a> | `arr + 5` |
+| Sum, average, min, max | <a href="#-aggregation">📈 Aggregation</a> | `np.mean(arr)` |
+| Reshape, transpose, flip | <a href="#-shape-manipulation">🔄 Shape Manipulation</a> | `arr.reshape(2,3)` |
+| Putting arrays together | <a href="#-combining-arrays">🔗 Combining Arrays</a> | `np.vstack([a,b])` |
+| Working with missing values | <a href="#-nan-handling">🚫 NaN Handling</a> | `np.nanmean(arr)` |
+| Linear algebra stuff | <a href="#-matrix-operations">🧮 Matrix Operations</a> | `arr @ other` |
+</p>
+<p>
+</div>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🏗️ Array Creation</h2>
+</p>
+<p>
+<blockquote><strong>🎨 Just want an array? Pick your flavor!</strong></blockquote>
+</p>
+<p>
+<details open>
+<summary><b>📦 From Lists & Sequences</b></summary>
+</p>
+<p>
+<pre><code class="python">
+<h1>From a list</h1>
+np.array([1, 2, 3])
+</p>
+<p>
+<h1>2D array from nested lists</h1>
+np.array([[1, 2], [3, 4]])
+</code></pre>
+</details>
+</p>
+<p>
+<details open>
+<summary><b>🔢 Zeros, Ones & Filled Arrays</b></summary>
+</p>
+<p>
+<pre><code class="python">
+<h1>Full of zeros or ones</h1>
+np.zeros(5)                  # [0. 0. 0. 0. 0.]
+np.ones((2, 3))              # All 1's, shape 2×3
+np.full((2, 2), 7)           # All 7's in 2×2 array
+</code></pre>
+</details>
+</p>
+<p>
+<details open>
+<summary><b>🔢 Sequential & Evenly Spaced</b></summary>
+</p>
+<p>
+<pre><code class="python">
+<h1>Counting up (like range())</h1>
+np.arange(10)                # 0, 1, 2, ... 9
+np.arange(2, 10, 2)          # 2, 4, 6, 8
+</p>
+<p>
+<h1>Evenly spaced numbers</h1>
+np.linspace(0, 1, 5)         # 5 numbers between 0-1
+</code></pre>
+</details>
+</p>
+<p>
+<details open>
+<summary><b>🎲 Random Arrays</b></summary>
+</p>
+<p>
+<pre><code class="python">
+np.random.rand(2, 3)         # Random decimals 0-1
+np.random.randint(0, 10, 5)  # Random integers 0-10
+np.random.normal(0, 1, 100)  # Normal distribution (mean=0, std=1)
+np.random.choice([1,2,3], 5) # Random selection
+</code></pre>
+</details>
+</p>
+<p>
+<details open>
+<summary><b>🎯 Special Matrices</b></summary>
+</p>
+<p>
+<pre><code class="python">
+np.eye(3)                    # Identity matrix (1's on diagonal)
+np.diag([1, 2, 3])           # Diagonal matrix
+np.tri(3)                    # Lower triangular matrix
+</code></pre>
+</details>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>📊 Array Properties</h2>
+</p>
+<p>
+<blockquote><strong>🔍 What's inside your array?</strong></blockquote>
+</p>
+<p>
+<h3>📐 <strong>Shape & Dimensions</strong></h3>
+<pre><code class="python">
+arr.shape          # (rows, columns) - like &quot;3×5&quot;
+arr.ndim           # How many dimensions? 1D, 2D, 3D, etc
+arr.size           # Total number of elements
+len(arr)           # Length (rows only)
+</code></pre>
+</p>
+<p>
+<h3>🧬 <strong>Data Type & Memory</strong></h3>
+<pre><code class="python">
+arr.dtype          # Data type: int64, float32, etc
+arr.itemsize       # Bytes per item
+arr.nbytes         # Total memory used = size × itemsize
+</code></pre>
+</p>
+<p>
+<h3>⚡ <strong>Quick Transformations</strong></h3>
+<pre><code class="python">
+arr.T              # Transpose (flip rows ↔ columns)
+arr.flat           # 1D iterator over array
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🎯 Indexing & Slicing</h2>
+</p>
+<p>
+<blockquote><strong>✂️ Grabbing specific pieces from your array</strong></blockquote>
+</p>
+<p>
+<h3>🎪 <strong>Single Elements</strong></h3>
+<pre><code class="python">
+arr[0]             # First element
+arr[-1]            # Last element
+arr[2]             # Element at index 2
+</code></pre>
+</p>
+<p>
+<h3>🔪 <strong>Slicing (Ranges)</strong></h3>
+<pre><code class="python">
+arr[1:3]           # Elements 1 and 2 (NOT 3)
+arr[0:5:2]         # Elements 0, 2, 4 (every 2nd)
+arr[::2]           # Every 2nd element from start to end
+arr[::-1]          # Reverse the array
+</code></pre>
+</p>
+<p>
+<h3>🎛️ <strong>2D Arrays (Rows & Columns)</strong></h3>
+<pre><code class="python">
+arr[0, 0]          # Row 0, Column 0
+arr[0, :]          # Entire row 0
+arr[:, 1]          # Entire column 1
+arr[1:3, 0:2]      # Rows 1-2, Columns 0-1
+</code></pre>
+</p>
+<p>
+<h3>🎭 <strong>Boolean Indexing (Smart Filtering)</strong></h3>
+<pre><code class="python">
+arr[arr &gt; 5]       # All elements greater than 5
+arr[arr % 2 == 0]  # All even numbers
+arr[(arr &gt; 5) &amp; (arr &lt; 10)]  # Multiple conditions
+</code></pre>
+</p>
+<p>
+<h3>🎯 <strong>Fancy Indexing</strong></h3>
+<pre><code class="python">
+arr[[0, 2, 4]]     # Elements at positions 0, 2, 4
+arr[[True, False, True]]  # Boolean array
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>➕ Math Operations</h2>
+</p>
+<p>
+<blockquote><strong>🧮 Do math on your whole array at once! (Vectorized = FAST!)</strong></blockquote>
+</p>
+<p>
+<h3>🔢 <strong>Basic Arithmetic</strong></h3>
+<pre><code class="python">
+arr + 5            # Add 5 to everything
+arr - 10           # Subtract 10 from everything
+arr * 2            # Multiply everything by 2
+arr / 2            # Divide everything by 2
+arr <em></em> 2           # Square everything
+arr % 3            # Modulo (remainder)
+arr // 2           # Floor division
+</code></pre>
+</p>
+<p>
+<h3>📐 <strong>Powers & Roots</strong></h3>
+<pre><code class="python">
+np.sqrt(arr)       # Square root
+np.cbrt(arr)       # Cube root
+np.power(arr, 3)   # Raise to power
+np.exp(arr)        # e^x (exponential)
+np.log(arr)        # Natural logarithm (ln)
+np.log10(arr)      # Base-10 logarithm
+</code></pre>
+</p>
+<p>
+<h3>🌊 <strong>Trigonometry</strong></h3>
+<pre><code class="python">
+np.sin(arr)        # Sine
+np.cos(arr)        # Cosine
+np.tan(arr)        # Tangent
+np.arcsin(arr)     # Inverse sine
+</code></pre>
+</p>
+<p>
+<h3>🎯 <strong>Absolute & Rounding</strong></h3>
+<pre><code class="python">
+np.abs(arr)        # Absolute value
+np.round(arr, 2)   # Round to 2 decimals
+np.floor(arr)      # Round down
+np.ceil(arr)       # Round up
+</code></pre>
+</p>
+<p>
+<h3>💡 <strong>Useful Tricks</strong></h3>
+<pre><code class="python">
+arr - arr.mean()   # Center the data (subtract average)
+(arr - arr.min()) / (arr.max() - arr.min())  # Normalize to 0-1
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>📈 Aggregation</h2>
+</p>
+<p>
+<strong>Combine all numbers into one (or a few):</strong>
+</p>
+<p>
+<pre><code class="python">
+<h1>The basics</h1>
+np.sum(arr)        # Add everything up
+np.mean(arr)       # Average
+np.median(arr)     # Middle value
+np.std(arr)        # How spread out?
+np.var(arr)        # Variance (spread squared)
+np.min(arr)        # Smallest
+np.max(arr)        # Biggest
+</p>
+<p>
+<h1>Find positions</h1>
+np.argmin(arr)     # Position of smallest
+np.argmax(arr)     # Position of biggest
+</p>
+<p>
+<h1>By row or column</h1>
+arr.sum(axis=0)    # Sum down (columns)
+arr.sum(axis=1)    # Sum across (rows)
+</p>
+<p>
+<h1>Counting stuff</h1>
+np.count_nonzero(arr)      # How many non-zero values?
+np.unique(arr)             # List unique values
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🔄 Shape Manipulation</h2>
+</p>
+<p>
+<strong>Reorganize your data:</strong>
+</p>
+<p>
+<pre><code class="python">
+<h1>Change shape</h1>
+arr.reshape(2, 3)          # Reshape to 2 rows, 3 cols
+arr.reshape(-1)            # Flatten to 1D (auto-calc)
+arr.ravel()                # Flatten to 1D
+arr.flatten()              # Flatten (makes a copy)
+</p>
+<p>
+<h1>Flip and rotate</h1>
+arr.T or arr.transpose()   # Flip diagonally
+np.rot90(arr)              # Rotate 90 degrees
+</p>
+<p>
+<h1>Add dimensions</h1>
+arr[:, np.newaxis]         # Add column dimension
+arr[np.newaxis, :]         # Add row dimension
+np.expand_dims(arr, axis=0)
+</p>
+<p>
+<h1>Remove size-1 dimensions</h1>
+arr.squeeze()              # Remove 1-sized dimensions
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🔗 Combining Arrays</h2>
+</p>
+<p>
+<strong>Mash two arrays together:</strong>
+</p>
+<p>
+<pre><code class="python">
+<h1>Stack vertically (one on top of other)</h1>
+np.vstack([arr1, arr2])    # Vertical stack
+np.concatenate([arr1, arr2], axis=0)
+</p>
+<p>
+<h1>Stack horizontally (side by side)</h1>
+np.hstack([arr1, arr2])    # Horizontal stack
+np.concatenate([arr1, arr2], axis=1)
+</p>
+<p>
+<h1>Stack by depth</h1>
+np.dstack([arr1, arr2])    # Depth stack
+</p>
+<p>
+<h1>Generic combine</h1>
+np.concatenate([arr1, arr2])  # Default: stack vertically
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🎭 Broadcasting</h2>
+</p>
+<p>
+<strong>Let NumPy figure out the math:</strong>
+</p>
+<p>
+<pre><code class="python">
+<h1>This &quot;just works&quot;</h1>
+arr + 5                    # Add 5 to every element
+(3, 4) + (4,)             # Broadcasts to (3, 4) ✅
+(3, 1) + (1, 4)           # Broadcasts to (3, 4) ✅
+</p>
+<p>
+<h1>When shapes don't fit, use newaxis</h1>
+arr[:, np.newaxis] + other_arr
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🚫 NaN Handling</h2>
+</p>
+<p>
+<strong>Deal with missing values:</strong>
+</p>
+<p>
+<pre><code class="python">
+<h1>Detect NaN</h1>
+np.isnan(arr)              # True where NaN, False elsewhere
+np.any(np.isnan(arr))      # Is there ANY NaN?
+</p>
+<p>
+<h1>Ignore NaN in calculations</h1>
+np.nanmean(arr)            # Average (skip NaN)
+np.nansum(arr)             # Sum (skip NaN)
+np.nanstd(arr)             # Std dev (skip NaN)
+np.nanmin(arr)             # Min (skip NaN)
+np.nanmax(arr)             # Max (skip NaN)
+</p>
+<p>
+<h1>Replace NaN</h1>
+np.nan<em>to</em>num(arr)         # Replace NaN with 0
+arr[np.isnan(arr)] = 0     # Manual replacement
+</p>
+<p>
+<h1>Filter out NaN</h1>
+arr[~np.isnan(arr)]        # Keep only non-NaN values
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🔀 Sorting & Finding</h2>
+</p>
+<p>
+<strong>Organize your data:</strong>
+</p>
+<p>
+<pre><code class="python">
+<h1>Sort</h1>
+np.sort(arr)               # Sorted copy
+arr.sort()                 # Sort in place
+</p>
+<p>
+<h1>Find positions</h1>
+np.argsort(arr)            # Positions that would sort it
+np.argmax(arr)             # Position of max
+np.argmin(arr)             # Position of min
+</p>
+<p>
+<h1>Unique values</h1>
+np.unique(arr)             # Unique values only
+np.unique(arr, return_counts=True)  # With counts
+</p>
+<p>
+<h1>Search</h1>
+np.where(arr &gt; 5)          # Positions where True
+np.searchsorted(arr, 7)    # Where to insert 7
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🎯 Conditional Operations</h2>
+</p>
+<p>
+<strong>If this, then that:</strong>
+</p>
+<p>
+<pre><code class="python">
+<h1>Where (if-then-else)</h1>
+np.where(condition, true<em>value, false</em>value)
+</p>
+<p>
+<h1>Example: Replace negative with 0</h1>
+np.where(arr &lt; 0, 0, arr)
+</p>
+<p>
+<h1>Clamp values (min-max)</h1>
+np.clip(arr, min=0, max=10)    # Keep between 0-10
+</p>
+<p>
+<h1>Multiple conditions</h1>
+np.select([cond1, cond2], [val1, val2], default=0)
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🧮 Matrix Operations</h2>
+</p>
+<p>
+<strong>Linear algebra stuff:</strong>
+</p>
+<p>
+<pre><code class="python">
+<h1>Matrix multiply</h1>
+arr @ other_arr             # Matrix multiply (modern)
+np.dot(arr, other_arr)      # Matrix multiply (classic)
+np.matmul(arr, other_arr)   # Matrix multiply (explicit)
+</p>
+<p>
+<h1>Transpose</h1>
+arr.T                       # Flip diagonally
+</p>
+<p>
+<h1>Inverse &amp; determinant</h1>
+np.linalg.inv(arr)          # Matrix inverse
+np.linalg.det(arr)          # Determinant
+</p>
+<p>
+<h1>Eigenvalues &amp; eigenvectors</h1>
+np.linalg.eigvals(arr)      # Eigenvalues only
+evals, evecs = np.linalg.eig(arr)  # Both
+</p>
+<p>
+<h1>Norms</h1>
+np.linalg.norm(arr)         # Magnitude
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>💾 Saving & Loading</h2>
+</p>
+<p>
+<strong>Persist your hard work:</strong>
+</p>
+<p>
+<pre><code class="python">
+<h1>Binary (fast, preserves dtype)</h1>
+np.save('file.npy', arr)            # Save
+arr = np.load('file.npy')           # Load
+</p>
+<p>
+<h1>CSV (human-readable)</h1>
+np.savetxt('file.csv', arr, delimiter=',')
+arr = np.loadtxt('file.csv', delimiter=',')
+</p>
+<p>
+<h1>Multiple arrays</h1>
+np.savez('data.npz', a=arr1, b=arr2)
+data = np.load('data.npz')
+arr1 = data['a']
+arr2 = data['b']
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>⚡ Performance Tips</h2>
+</p>
+<p>
+<blockquote><strong>🚀 Make your code BLAZINGLY FAST!</strong></blockquote>
+</p>
+<p>
+<h3>✅ <strong>FAST - Vectorized Operations (USE THESE!)</strong></h3>
+<pre><code class="python">
+result = arr + 1               # ⚡ 100x faster than loops
+result = np.sum(arr, axis=0)   # ⚡ Built-in C optimization
+result = arr[arr &gt; 5]          # ⚡ Boolean indexing
+result = arr * arr             # ⚡ Element-wise operations
+</code></pre>
+</p>
+<p>
+<h3>❌ <strong>SLOW - Python Loops (AVOID!)</strong></h3>
+<pre><code class="python">
+result = np.array([x + 1 for x in arr])  # ❌ 100x slower!
+result = sum([x for x in arr])            # ❌ Very slow
+for i in range(len(arr)):                 # ❌ Don't loop!
+    arr[i] = arr[i] + 1
+</code></pre>
+</p>
+<p>
+<h3>💾 <strong>Memory Optimization</strong></h3>
+<pre><code class="python">
+<h1>Use smaller data types</h1>
+arr = arr.astype(np.float32)   # Half the size of float64
+arr = arr.astype(np.int16)     # Smaller than int64
+</p>
+<p>
+<h1>Pre-allocate arrays</h1>
+result = np.empty((1000, 1000))  # Faster than append
+result = np.zeros((1000, 1000))  # Initialize with zeros
+</p>
+<p>
+<h1>Copy when needed</h1>
+arr_copy = arr.copy()          # Independent array
+view = arr[:]                  # Shared memory (faster)
+</code></pre>
+</p>
+<p>
+<h3>🎯 <strong>Speed Comparison</strong></h3>
+| Operation | Python Loop | NumPy Vectorized | Speedup |
+|-----------|-------------|------------------|----------|
+| Add 1 to 1M elements | ~100ms | ~1ms | <strong>100x</strong> |
+| Sum 1M elements | ~80ms | ~0.5ms | <strong>160x</strong> |
+| Matrix multiply | ~10s | ~50ms | <strong>200x</strong> |
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🎓 Common Gotchas</h2>
+</p>
+<p>
+<blockquote><strong>⚠️ Avoid these common mistakes!</strong></blockquote>
+</p>
+<p>
+<div align="center">
+</p>
+<p>
+| 💥 <strong>Problem</strong> | ✅ <strong>Solution</strong> | 📝 <strong>Example</strong> |
+|:--------------|:---------------|:---------------|
+| Shape mismatch | Print `arr.shape` first! | `print(arr.shape)` |
+| Accidentally modify original | Use `.copy()` | `new_arr = arr.copy()` |
+| Slow Python loops | Use vectorized operations | `arr + 1` not `[x+1 for x in arr]` |
+| Floating point comparison | Use `np.allclose()` not `==` | `np.allclose(a, b)` |
+| Memory bloat | Use `float32` instead of `float64` | `arr.astype(np.float32)` |
+| Views vs copies confusion | Remember `.copy()` creates independent array | `view = arr[:]` vs `copy = arr.copy()` |
+| Integer division issues | Use floats or `np.true<em>divide()` | `arr / 2.0` or `np.true</em>divide(arr, 2)` |
+| Out of bounds indexing | Check array length first | `if i < len(arr): arr[i]` |
+</p>
+<p>
+</div>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h2>🔢 Data Types Quickie</h2>
+</p>
+<p>
+<pre><code class="python">
+np.int8, np.int16, np.int32, np.int64          # Integers (different sizes)
+np.uint8, np.uint16, np.uint32, np.uint64      # Unsigned (positive only)
+np.float16, np.float32, np.float64              # Decimals (different precision)
+np.complex64, np.complex128                     # Complex numbers
+np.bool_                                        # True/False
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<div align="center">
+</p>
+<p>
+<h2>🎉 That's It! You're Now a NumPy Pro!</h2>
+</p>
+<p>
+<h3>📚 <strong>Next Steps</strong></h3>
+</p>
+<p>
+<a href="https://img.shields.io/badge/←<em>Go</em>Back<em>to</em>README-667EEA?style=for-the-badge">![← Go Back to README</a>](README.md)
+<a href="https://img.shields.io/badge/→<em>Full</em>Tutorial-764BA2?style=for-the-badge">![→ Full Tutorial</a>](src/code.ipynb)
+<a href="https://img.shields.io/badge/⭐<em>Star</em>on_GitHub-181717?style=for-the-badge&logo=github">![⭐ Star on GitHub</a>](https://github.com/DhruvilThummar/Numpy)
+</p>
+<p>
+<hr>
+</p>
+<p>
+<h3>💡 <strong>Quick Tips to Remember</strong></h3>
+</p>
+<p>
+<pre><code class="python">
+<h1>The 3 Golden Rules of NumPy:</h1>
+<li>Always use vectorized operations (avoid Python loops!)</li>
+<li>Check array.shape before operating</li>
+<li>Use .copy() when you don't want to modify the original</li>
+</code></pre>
+</p>
+<p>
+<hr>
+</p>
+<p>
+<strong>Made with ❤️ for the NumPy community</strong>
+</p>
+<p>
+<em>Happy Array Computing! 🚀</em>
+</p>
+<p>
+</div>
+
+</p>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="readme.html">Tutorial</a>
+                <a href="quick-reference.html">Quick Reference</a>
+                <a href="notebook.html">Interactive Code</a>
+                <a href="https://github.com/DhruvilThummar/Numpy" target="_blank">GitHub</a>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 NumPy Crash Notes. Built for learners everywhere.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Active navigation link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

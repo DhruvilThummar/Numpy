@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NumPy Interactive Code - Jupyter Notebook with 38 examples">
+    <title>Interactive Code - NumPy Crash Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f1f5f9;
+            --card-bg: white;
+            --text: #1e293b;
+            --muted: #64748b;
+            --primary: #667eea;
+            --primary-dark: #764ba2;
+            --accent: #7dd3fc;
+            --success: #22c55e;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.6;
+        }
+
+        /* ===== Navigation ===== */
+        nav.navbar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-icon {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        /* ===== Main Content ===== */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* ===== Content Section ===== */
+        .content-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .content-section h1 {
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 1rem;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            color: var(--text);
+            margin: 2rem 0 1rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.75rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin: 1.5rem 0 1rem;
+            margin-top: 1.75rem;
+        }
+
+        .content-section p {
+            margin: 1.25rem 0;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .content-section ul {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .content-section li {
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        /* ===== Button Styles ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* ===== Info Cards ===== */
+        .info-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .info-card strong {
+            color: var(--primary);
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-item {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            transform: translateY(-2px);
+        }
+
+        .feature-item h4 {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* ===== Code Block ===== */
+        .code-example {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border-left: 4px solid var(--primary);
+        }
+
+        .code-example code {
+            color: #e2e8f0;
+        }
+
+        /* ===== Table ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 3px solid var(--primary);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            main {
+                padding: 1rem;
+            }
+
+            .content-section {
+                padding: 1.5rem;
+            }
+
+            .content-section h1 {
+                font-size: 1.75rem;
+            }
+
+            .content-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <span class="nav-icon">📊</span>
+                NumPy Crash Notes
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="readme.html" class="nav-link">Tutorial</a>
+                <a href="quick-reference.html" class="nav-link">Quick Reference</a>
+                <a href="notebook.html" class="nav-link active">Interactive Code</a>
+                <a href="https://github.com/DhruvilThummar/Numpy" target="_blank" class="nav-link">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="content-section">
+            <h1>💻 Interactive Code Environment</h1>
+            
+            <p>The NumPy Crash Notes includes <strong>38 interactive Jupyter notebook cells</strong> that let you learn by doing. Write code, see results instantly, and experiment with NumPy in a hands-on way.</p>
+
+            <div class="info-card">
+                <strong>🚀 Ready to Start?</strong> You have two options to run the interactive code:
+            </div>
+
+            <h2>Option 1: Run Locally (Recommended)</h2>
+            
+            <p>Download and run the notebook on your own computer for the best experience:</p>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h4>📥 Download</h4>
+                    <p>Clone or download the repository from GitHub</p>
+                </div>
+                <div class="feature-item">
+                    <h4>⚙️ Install</h4>
+                    <p>Install numpy and jupyter using pip or conda</p>
+                </div>
+                <div class="feature-item">
+                    <h4>▶️ Run</h4>
+                    <p>Open <code>src/code.ipynb</code> and start learning</p>
+                </div>
+                <div class="feature-item">
+                    <h4>⌨️ Code</h4>
+                    <p>Run, modify, and experiment with the code</p>
+                </div>
+            </div>
+
+            <h3>Quick Start Commands</h3>
+            
+            <div class="code-example">
+<code># 1. Clone the repository
+git clone https://github.com/DhruvilThummar/Numpy.git
+cd Numpy
+
+# 2. Create virtual environment (optional)
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# 3. Install dependencies
+pip install numpy jupyter
+
+# 4. Start Jupyter
+jupyter notebook src/code.ipynb</code>
+            </div>
+
+            <h2>Option 2: Run on Cloud Platforms</h2>
+            
+            <p>Don't have Python installed? Run the notebook directly in your browser on cloud platforms:</p>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h4>🔵 Google Colab</h4>
+                    <p>Free cloud Jupyter. Just upload the .ipynb file</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🌐 JupyterLite</h4>
+                    <p>Run Jupyter directly in your browser (no server)</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🐙 GitHub + Binder</h4>
+                    <p>Run repository notebooks without installing anything</p>
+                </div>
+                <div class="feature-item">
+                    <h4>☁️ Kaggle Notebooks</h4>
+                    <p>Free hosted environment for data science</p>
+                </div>
+            </div>
+
+            <h2>📖 What's in the Notebook</h2>
+
+            <p>The interactive code is organized into <strong>38 progressive sections</strong>:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Section Range</th>
+                        <th>Topic</th>
+                        <th>What You Learn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sections 1-10</td>
+                        <td>Fundamentals</td>
+                        <td>Arrays, creation, dtypes, indexing, slicing</td>
+                    </tr>
+                    <tr>
+                        <td>Sections 11-20</td>
+                        <td>Core Operations</td>
+                        <td>Math operations, statistics, broadcasting, combining arrays</td>
+                    </tr>
+                    <tr>
+                        <td>Sections 21-30</td>
+                        <td>Data Manipulation</td>
+                        <td>Sorting, searching, I/O, working with missing data</td>
+                    </tr>
+                    <tr>
+                        <td>Sections 31-38</td>
+                        <td>Advanced Topics</td>
+                        <td>Linear algebra, performance optimization, best practices</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>💡 How to Use the Notebook</h2>
+
+            <h3>Running Cells</h3>
+            <p>Click on any cell and press <strong>Shift + Enter</strong> to run it. The output appears directly below.</p>
+
+            <h3>Editing Code</h3>
+            <p>All code cells are <strong>fully editable</strong>. Try changing values, functions, or logic to experiment:</p>
+
+            <div class="code-example">
+<code># Try editing this example
+import numpy as np
+arr = np.array([1, 2, 3, 4, 5])
+print(arr * 2)  # Change the operation or values
+
+# Experiment:
+# arr = np.array([10, 20, 30])
+# print(arr ** 2)</code>
+            </div>
+
+            <h3>Your Workflow</h3>
+            <ol>
+                <li>Read the explanation text in the cell</li>
+                <li>Run the provided code example (Shift + Enter)</li>
+                <li>Modify the code to understand better</li>
+                <li>Run your modified code</li>
+                <li>Move to the next section</li>
+            </ol>
+
+            <h2>🔧 Requirements</h2>
+
+            <ul>
+                <li><strong>Python 3.7+</strong> — Modern Python version</li>
+                <li><strong>NumPy 1.20+</strong> — The library we're learning</li>
+                <li><strong>Jupyter</strong> — Interactive notebook environment</li>
+            </ul>
+
+            <p>All are easily installed with: <code>pip install numpy jupyter</code></p>
+
+            <h2>❓ Troubleshooting</h2>
+
+            <h3>ImportError: No module named 'numpy'</h3>
+            <p>Solution: Run <code>pip install numpy</code> in your terminal</p>
+
+            <h3>Jupyter not found</h3>
+            <p>Solution: Run <code>pip install jupyter</code> then <code>jupyter notebook src/code.ipynb</code></p>
+
+            <h3>Cell output not showing</h3>
+            <p>Make sure to press <strong>Shift + Enter</strong> to execute the cell. Output appears below it.</p>
+
+            <h2>📚 Additional Resources</h2>
+
+            <ul>
+                <li><a href="readme.html">Read the full written tutorial</a> for detailed explanations</li>
+                <li><a href="quick-reference.html">Check the quick reference</a> for copy-paste snippets</li>
+                <li><a href="https://numpy.org/doc/" target="_blank">NumPy official documentation</a> for comprehensive docs</li>
+                <li><a href="https://github.com/DhruvilThummar/Numpy" target="_blank">GitHub repository</a> to download or contribute</li>
+            </ul>
+
+            <div class="info-card" style="margin-top: 2rem;">
+                <strong>🎯 Pro Tips:</strong>
+                <ul style="margin-top: 0.75rem; margin-bottom: 0;">
+                    <li>Don't just read — actually run and modify the code</li>
+                    <li>Break the code intentionally to learn error messages</li>
+                    <li>Try variations of examples before moving to the next section</li>
+                    <li>Use the quick reference while coding to explore related functions</li>
+                </ul>
+            </div>
+
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border); display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="https://github.com/DhruvilThummar/Numpy" class="btn">
+                    <span>🐙</span> Download from GitHub
+                </a>
+                <a href="readme.html" class="btn btn-secondary">
+                    <span>📖</span> Read Tutorial
+                </a>
+                <a href="quick-reference.html" class="btn btn-secondary">
+                    <span>⚡</span> Quick Reference
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="readme.html">Tutorial</a>
+                <a href="quick-reference.html">Quick Reference</a>
+                <a href="notebook.html">Interactive Code</a>
+                <a href="https://github.com/DhruvilThummar/Numpy" target="_blank">GitHub</a>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 NumPy Crash Notes. Built for learners everywhere.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Active navigation link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
