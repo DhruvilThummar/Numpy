@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
             --bg: #0f1419;
@@ -688,107 +689,15 @@
             }
         }
 
-        // Convert Markdown to HTML
+        // Convert Markdown to HTML using marked for accuracy
         function markdownToHtml(md) {
-            let html = md;
-
-            // Remove HTML div tags for center alignment
-            html = html.replace(/<div align="center">/g, '<div style="text-align: center;">');
-            html = html.replace(/<\/div>/g, '</div>');
-
-            // Images (shields.io badges and others)
-            html = html.replace(/!\[([^\]]*)\]\(([^\)]*)\)/g, '<img src="$2" alt="$1" style="display: inline-block; margin: 0.25rem;">');
-
-            // Tables - more robust parsing
-            html = html.replace(/\|(.+)\|\n\|([:\-\s\|]+)\|\n((\|.+\|\n?)+)/gm, function(match, header, separator, rows) {
-                let tableHtml = '<table>';
-                
-                // Header
-                tableHtml += '<thead><tr>';
-                header.split('|').filter(cell => cell.trim()).forEach(cell => {
-                    tableHtml += `<th>${cell.trim()}</th>`;
+            if (typeof marked !== 'undefined') {
+                return marked.parse(md, {
+                    breaks: true,
+                    gfm: true
                 });
-                tableHtml += '</tr></thead>';
-                
-                // Body
-                tableHtml += '<tbody>';
-                rows.trim().split('\n').forEach(row => {
-                    if (row.trim()) {
-                        tableHtml += '<tr>';
-                        row.split('|').filter(cell => cell.trim()).forEach(cell => {
-                            // Process inline markdown in cells
-                            let cellContent = cell.trim();
-                            cellContent = cellContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                            cellContent = cellContent.replace(/`([^`]+)`/g, '<code>$1</code>');
-                            cellContent = cellContent.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2">$1</a>');
-                            tableHtml += `<td>${cellContent}</td>`;
-                        });
-                        tableHtml += '</tr>';
-                    }
-                });
-                tableHtml += '</tbody></table>';
-                
-                return tableHtml;
-            });
-
-            // Details/Summary tags (for collapsible sections)
-            html = html.replace(/<details([^>]*)>/g, '<details$1 style="margin: 1rem 0; padding: 1rem; background: rgba(96, 165, 250, 0.05); border-radius: 8px;">');
-            html = html.replace(/<summary><b>(.*?)<\/b><\/summary>/g, '<summary style="cursor: pointer; font-weight: 600; color: var(--accent); margin-bottom: 0.5rem;">$1</summary>');
-
-            // Code blocks with language
-            html = html.replace(/```python([\s\S]*?)```/g, '<pre><code class="language-python">$1</code></pre>');
-            html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-
-            // Inline code
-            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-            // Bold and Italic
-            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-            // Links (not already processed)
-            html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-
-            // Headers
-            html = html.replace(/^#### (.*?)$/gm, '<h4>$1</h4>');
-            html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
-            html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
-            html = html.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
-
-            // Blockquotes
-            html = html.replace(/^> (.*?)$/gm, '<blockquote style="border-left: 3px solid var(--accent); padding-left: 1rem; margin: 1rem 0; color: var(--muted);">$1</blockquote>');
-
-            // Lists - unordered
-            html = html.replace(/^\* (.*?)$/gm, '<li>$1</li>');
-            html = html.replace(/^- (.*?)$/gm, '<li>$1</li>');
-            
-            // Lists - ordered
-            html = html.replace(/^\d+\. (.*?)$/gm, '<li>$1</li>');
-            
-            // Wrap consecutive list items
-            html = html.replace(/(<li>.*?<\/li>\n?)+/g, function(match) {
-                return '<ul>' + match + '</ul>';
-            });
-
-            // Horizontal rules
-            html = html.replace(/^---$/gm, '<hr>');
-
-            // Paragraphs (but avoid wrapping already processed elements)
-            const lines = html.split('\n\n');
-            html = lines.map(line => {
-                line = line.trim();
-                if (!line) return '';
-                // Don't wrap if it's already an HTML element
-                if (line.match(/^<(h\d|div|table|ul|ol|pre|blockquote|hr|details|img)/)) {
-                    return line;
-                }
-                return '<p>' + line + '</p>';
-            }).join('\n');
-
-            // Clean up
-            html = html.replace(/<p>\s*<\/p>/g, '');
-
-            return html;
+            }
+            return md;
         }
 
         // Load README
