@@ -25,7 +25,7 @@ A **compact, hands-on guide** to NumPy that cuts through the noise. No fluff, no
 - You want to learn by *running code*, not reading theory
 
 ### ✅ Our Solution
-- **38 interactive sections** with runnable Jupyter cells
+- **19 interactive sections** with runnable Jupyter cells
 - **Copy-paste ready** code (production patterns included)
 - **Plain English** explanations + visual outputs
 - **15 minutes to get started**, 2-4 hours to master
